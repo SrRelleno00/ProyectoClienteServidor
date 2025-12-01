@@ -31,7 +31,7 @@ main {
 #main-input-area {
     display: grid;
     grid-template-rows: auto auto; 
-    gap: 15px; /* Espacio vertical entre el formulario y la fila de botones */
+    gap: 15px; 
     margin-bottom: 20px;
     background-color: white; 
     padding: 15px;
@@ -48,8 +48,9 @@ main {
     
     /* Configuración de la cuadrícula interna del formulario */
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Dos columnas: 50%/50% */
-    gap: 10px; /* Espacio entre los inputs */
+    /* Define 4 columnas implícitas, pero usaremos el span para controlar la disposición */
+    grid-template-columns: 1fr 1fr; 
+    gap: 10px; 
 }
 
 /* 3. Estilos de los inputs y el textarea */
@@ -60,22 +61,15 @@ main {
     border-radius: 4px;
     font-size: 16px;
     width: 100%; 
-    box-sizing: border-box; /* Crucial para que el padding no desborde el ancho */
+    box-sizing: border-box; 
 }
 
-/* El input de Título ocupa el 100% (se extiende a ambas columnas) */
+/* Título: Ocupa toda la fila */
 #task-input {
     grid-column: 1 / -1; 
 }
 
-/* El textarea de Descripción ocupa toda la fila (ambas columnas) */
-#description-input {
-    grid-column: 1 / -1; 
-    height: 80px;
-    resize: vertical; /* Permite al usuario ajustar la altura */
-}
-
-/* El input de Materia y Fecha se dividen 50/50 */
+/* Materia y Fecha: Se dividen 50/50 */
 #subject-input {
     grid-column: 1 / 2;
 }
@@ -83,6 +77,14 @@ main {
 #due-date-input {
     grid-column: 2 / 3;
 }
+
+/* --- CAMBIO CLAVE: Aumentar la altura del textarea --- */
+#description-input {
+    grid-column: 1 / -1; /* Ocupa toda la fila */
+    height: 150px; /* ¡Altura aumentada a 150px! */
+    resize: vertical; 
+}
+/* -------------------------------------------------------- */
 
 
 /* 4. Contenedor de botones que alinea horizontalmente */
@@ -141,7 +143,7 @@ main {
 .task-item {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start; /* Alinea los detalles y botones en la parte superior */
+    align-items: flex-start; 
     background-color: white;
     padding: 15px;
     margin-bottom: 10px;
@@ -194,7 +196,7 @@ main {
     display: flex;
     flex-direction: column; 
     align-items: flex-end; 
-    min-width: 120px; /* Asegura espacio mínimo para los botones */
+    min-width: 120px; 
 }
 
 .top-actions {
@@ -248,7 +250,6 @@ main {
 
 
 /* 9. Estilos para el Modo Edición */
-/* Ocultamos los detalles y mostramos los inputs/textarea para editar */
 .task-item.editing .task-details-container,
 .task-item.editing .complete-btn,
 .task-item.editing .delete-btn {
@@ -256,7 +257,7 @@ main {
 }
 
 .task-item.editing .edit-form {
-    display: grid; /* Usamos grid para el formulario de edición */
+    display: grid; 
     grid-template-columns: 1fr 1fr;
     gap: 10px;
     flex-grow: 1;
@@ -273,10 +274,10 @@ main {
     box-sizing: border-box;
 }
 
-/* Hacemos que la descripción ocupe toda la fila en el modo edición */
+/* Aumentar altura del textarea en modo edición */
 .task-item.editing #edit-description-input {
     grid-column: 1 / -1;
-    height: 60px;
+    height: 100px; /* Altura generosa para edición */
 }
 
 /* Ocultar el formulario de edición por defecto */
