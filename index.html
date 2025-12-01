@@ -3,44 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRUD de Tareas Mejorado</title>
-    <link rel="stylesheet" href="styles/style.css">
+    <title>Administrador de Tareas</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
 
-    <header>
-        <h1>📋 Administrador de Tareas</h1>
-    </header>
+    <div id="app-container">
+        <header>
+            <h1>📋 Administrador de Tareas</h1>
+        </header>
 
-    <main>
-        <div id="main-input-area">
-            <form id="task-form">
-                <input type="text" id="task-input" placeholder="Título principal de la tarea..." required>
-                <input type="text" id="subject-input" placeholder="Materia o Proyecto..." required>
-                <input type="date" id="due-date-input" required>
-                <textarea id="description-input" placeholder="Descripción detallada de la tarea..."></textarea>
-            </form>
+        <main>
+            <div id="main-input-area">
+                <form id="task-form">
+                    <input type="text" id="task-input" placeholder="Título principal de la tarea..." required>
+                    <input type="text" id="subject-input" placeholder="Materia o Proyecto..." required>
+                    <input type="date" id="due-date-input" required>
+                    <textarea id="description-input" placeholder="Descripción detallada de la tarea..."></textarea>
+                </form>
 
-            <div id="main-buttons-row">
-                <button type="submit" form="task-form" id="add-task-btn">Agregar Tarea</button> 
-                <button id="clear-all-btn">Borrar todas las tareas</button>
+                <div id="main-buttons-row">
+                    <button type="submit" form="task-form" id="add-task-btn">Agregar Tarea</button> 
+                    <button id="clear-all-btn">Borrar todas las tareas</button>
+                </div>
             </div>
-        </div>
-        
-        <p id="error-message" style="color: #dc3545; margin-top: 10px; display: none;"></p>
+            
+            <p id="error-message" style="color: #dc3545; margin-top: 10px; display: none;"></p>
 
-        <div id="filter-controls" style="margin-bottom: 20px;">
-            <button class="filter-btn active" data-filter="all">Todas</button>
-            <button class="filter-btn" data-filter="pending">Pendientes</button>
-            <button class="filter-btn" data-filter="completed">Completadas</button>
-        </div>
-        
-        <section id="tasks-list">
-            <h2>Lista de Tareas</h2>
-            </section>
-    </main>
-
+            <div id="filter-controls">
+                <button class="filter-btn active" data-filter="all">Todas</button>
+                <button class="filter-btn" data-filter="pending">Pendientes</button>
+                <button class="filter-btn" data-filter="completed">Completadas</button>
+            </div>
+            
+            <section id="tasks-list">
+                <h2>Lista de Tareas</h2>
+                </section>
+        </main>
+    </div>
     <script src="script.js"></script>
 </body>
 </html>

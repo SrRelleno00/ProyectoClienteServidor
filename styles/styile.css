@@ -1,41 +1,46 @@
-/* Importar una fuente moderna de Google Fonts (simulación, asumiendo que se incluye en el <head> del HTML) */
-/* Si no has incluido el enlace en el HTML, puedes usar una fuente predeterminada del sistema. */
-
-/* @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap'); */
-
 /* 1. Estilos Globales y Reset Básico */
 body {
-    font-family: 'Roboto', Arial, sans-serif; /* Usamos Roboto como fuente principal */
-    background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%); /* Fondo degradado suave */
-    color: #263238; /* Color de texto oscuro */
+    font-family: 'Roboto', Arial, sans-serif; 
+    background-color: #e3f2fd; /* Fondo azul claro principal */
+    color: #263238; 
     margin: 0;
     padding: 0;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    justify-content: center; 
     min-height: 100vh;
 }
 
+/* --- CONTENEDOR BLANCO PARA TODA LA APLICACIÓN --- */
+#app-container {
+    background-color: white; 
+    width: 100%;
+    max-width: 900px; 
+    margin: 40px 20px; 
+    border-radius: 15px; 
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); 
+    overflow: hidden; 
+}
+
 header {
-    background-color: #00bcd4; /* Color turquesa vibrante */
+    background-color: #00bcd4; 
     color: white;
     width: 100%;
     text-align: center;
     padding: 30px 0;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
-    margin-bottom: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
 header h1 {
     font-weight: 700;
     font-size: 28px;
     letter-spacing: 1px;
+    margin: 0;
 }
 
 main {
     width: 90%;
-    max-width: 700px; /* Aumentamos ligeramente el ancho máximo */
-    margin-top: 20px;
+    max-width: 700px; 
+    margin: 30px auto; 
     padding-bottom: 40px;
 }
 
@@ -43,17 +48,16 @@ main {
 
 /* --- ESTILOS DEL ÁREA DE ENTRADA --- */
 
-/* 1. Contenedor principal (Card Effect) */
 #main-input-area {
     display: grid;
     grid-template-rows: auto auto; 
     gap: 20px; 
     margin-bottom: 30px;
-    background-color: white; 
+    background-color: #fafafa; 
     padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Sombra elegante */
-    border-top: 5px solid #00bcd4; /* Detalle de color */
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05); 
+    border-top: 3px solid #00bcd4; 
 }
 
 /* 2. Formulario Grid */
@@ -67,7 +71,7 @@ main {
 #task-form input, 
 #task-form textarea {
     padding: 12px;
-    border: 1px solid #cfd8dc; /* Borde más sutil */
+    border: 1px solid #cfd8dc; 
     border-radius: 6px;
     font-size: 15px;
     width: 100%; 
@@ -78,11 +82,11 @@ main {
 #task-form input:focus, 
 #task-form textarea:focus {
     border-color: #00bcd4;
-    box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.2); /* Sombra de foco azul */
+    box-shadow: 0 0 0 3px rgba(0, 188, 212, 0.2); 
     outline: none;
 }
 
-/* Posición de los elementos del Grid (igual que antes) */
+/* Posición de los elementos del Grid */
 #task-input {
     grid-column: 1 / -1; 
 }
@@ -127,7 +131,7 @@ main {
 }
 
 #add-task-btn {
-    background-color: #4caf50; /* Verde material */
+    background-color: #4caf50; 
     color: white;
 }
 
@@ -136,7 +140,7 @@ main {
 }
 
 #clear-all-btn {
-    background-color: #ff9800; /* Naranja para advertencia */
+    background-color: #ff9800; 
     color: white;
 }
 
@@ -169,7 +173,7 @@ main {
     color: #00bcd4;
     border: 2px solid #00bcd4;
     padding: 8px 15px;
-    border-radius: 20px; /* Forma de píldora */
+    border-radius: 20px; 
     cursor: pointer;
     font-weight: 500;
     transition: background-color 0.3s, color 0.3s, transform 0.1s;
@@ -178,7 +182,7 @@ main {
 #filter-controls button.active {
     background-color: #00bcd4;
     color: white;
-    box-shadow: 0 2px 5px rgba(0, 188, 212, 0.4);
+    box-shadow: 0 0 5px rgba(0, 188, 212, 0.4);
 }
 
 #filter-controls button:hover:not(.active) {
@@ -202,12 +206,12 @@ main {
     display: flex;
     justify-content: space-between;
     align-items: flex-start; 
-    background-color: white;
+    background-color: white; 
     padding: 20px;
     margin-bottom: 15px;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra elegante */
-    border-left: 5px solid #ffcc80; /* Indicador lateral */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+    border-left: 5px solid #ffcc80; 
     transition: box-shadow 0.3s, transform 0.3s, border-left 0.3s;
 }
 
@@ -241,7 +245,7 @@ main {
     color: #37474f;
     margin-top: 15px;
     padding: 10px;
-    border-left: 4px solid #b3e5fc; /* Color de bloque de descripción */
+    border-left: 4px solid #b3e5fc; 
     background-color: #f5f5f5;
     border-radius: 4px;
     white-space: pre-wrap; 
@@ -250,8 +254,8 @@ main {
 
 /* 8. Estilos de Completado */
 .task-item.completed {
-    background-color: #e8f5e9; /* Fondo muy claro para completado */
-    border-left: 5px solid #4caf50; /* Indicador lateral verde */
+    background-color: #e8f5e9; 
+    border-left: 5px solid #4caf50; 
 }
 
 .task-item.completed .task-title,
@@ -293,12 +297,12 @@ main {
 
 /* Estilos individuales de los botones */
 .edit-btn {
-    background-color: #ff9800; /* Naranja */
+    background-color: #ff9800; 
     color: white;
 }
 
 .delete-btn {
-    background-color: #f44336; /* Rojo material */
+    background-color: #f44336; 
 }
 
 .complete-btn {
@@ -308,11 +312,11 @@ main {
 }
 
 .complete-btn.pending {
-    background-color: #2196f3; /* Azul */
+    background-color: #2196f3; 
 }
 
 .complete-btn.completed {
-    background-color: #4caf50; /* Verde */
+    background-color: #4caf50; 
 }
 
 ---
@@ -320,7 +324,11 @@ main {
 /* 9. Estilos para el Modo Edición */
 
 .task-item.editing {
-    border-left: 5px solid #2196f3; /* Indicador azul para edición */
+    border-left: 5px solid #2196f3; 
+}
+
+.task-item.editing .task-details-container {
+    display: none;
 }
 
 .task-item.editing .edit-form {
@@ -335,22 +343,23 @@ main {
 .task-item.editing .edit-form textarea {
     padding: 8px;
     border: 1px solid #2196f3;
-    background-color: #e3f2fd; /* Fondo ligero para inputs de edición */
+    background-color: #e3f2fd; 
     border-radius: 4px;
     font-size: 15px;
     width: 100%;
     box-sizing: border-box;
 }
 
+.task-item.editing #edit-description-input {
+    grid-column: 1 / -1;
+    height: 100px; 
+}
+
 .task-item.editing .edit-btn {
-    background-color: #2196f3; /* Azul para Guardar */
+    background-color: #2196f3; 
     color: white;
 }
 
-/* Ocultar elementos en modo edición (la lógica JS lo maneja, pero el CSS refuerza) */
-.task-item.editing .task-details-container {
-    display: none;
-}
 .edit-form {
     display: none;
 }
