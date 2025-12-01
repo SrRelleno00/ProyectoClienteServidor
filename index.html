@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CRUD de Tareas</title>
+    <title>CRUD de Tareas Mejorado</title>
     <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
@@ -16,10 +16,17 @@
         <form id="task-form">
             <input type="text" id="task-input" placeholder="Añadir nueva tarea..." required>
             <button type="submit">Agregar Tarea</button>
+            <p id="error-message" style="color: #dc3545; margin-top: 10px; display: none;"></p>
         </form>
 
+        <div id="filter-controls" style="margin-bottom: 20px;">
+            <button class="filter-btn active" data-filter="all">Todas</button>
+            <button class="filter-btn" data-filter="pending">Pendientes</button>
+            <button class="filter-btn" data-filter="completed">Completadas</button>
+        </div>
+        
         <section id="tasks-list">
-            <h2>Tareas Pendientes</h2>
+            <h2>Lista de Tareas</h2>
             </section>
     </main>
 
