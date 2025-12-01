@@ -4,13 +4,13 @@ const taskInput = document.getElementById('task-input');
 const tasksList = document.getElementById('tasks-list');
 const errorMessage = document.getElementById('error-message');
 const filterControls = document.getElementById('filter-controls');
-const clearAllBtn = document.getElementById('clear-all-btn'); // Nuevo botón
+const clearAllBtn = document.getElementById('clear-all-btn'); 
 
 // 1. Event Listeners y Carga Inicial
 document.addEventListener('DOMContentLoaded', loadTasks);
 taskForm.addEventListener('submit', addTask);
 filterControls.addEventListener('click', handleFilterClick);
-clearAllBtn.addEventListener('click', clearAllTasks); // Nuevo Listener
+clearAllBtn.addEventListener('click', clearAllTasks); 
 
 /**
  * Carga las tareas aplicando el filtro por defecto ('all').

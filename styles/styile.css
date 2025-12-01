@@ -25,37 +25,52 @@ main {
     margin-top: 30px;
 }
 
-/* --- Estilos para el nuevo contenedor de entrada y borrado --- */
-#input-actions-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 15px;
+/* --- ESTILOS CLAVE PARA EL NUEVO LAYOUT (Input arriba, botones abajo) --- */
+
+/* 1. Contenedor principal que apila el input y los botones (Grid) */
+#main-input-area {
+    display: grid;
+    grid-template-rows: auto auto; 
+    gap: 10px; 
+    margin-bottom: 20px;
+    background-color: white; 
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
+/* 2. El Formulario solo contiene el input */
 #task-form {
     background-color: transparent;
     padding: 0;
     box-shadow: none;
-    display: flex;
+    display: flex; 
     flex-grow: 1;
-    margin-right: 20px;
+    margin: 0; 
 }
-/* ---------------------------------------------------------------------- */
 
-
-/* 2. Estilos del Formulario de Creación (C) */
+/* 3. El Input ocupa todo el ancho */
 #task-form input[type="text"] {
     flex-grow: 1;
     padding: 10px;
     border: 2px solid #ccc;
     border-radius: 4px;
     font-size: 16px;
-    width: calc(100% - 130px); 
-    margin-right: 10px;
+    width: 100%; 
+    margin: 0;
 }
 
-#task-form button[type="submit"] {
+/* 4. Contenedor de botones que alinea horizontalmente */
+#main-buttons-row {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px; 
+}
+/* ---------------------------------------------------------------------- */
+
+
+/* 5. Estilos para el botón "Agregar Tarea" */
+#add-task-btn {
     background-color: #28a745;
     color: white;
     border: none;
@@ -66,30 +81,30 @@ main {
     transition: background-color 0.3s;
 }
 
-#task-form button:hover {
+#add-task-btn:hover {
     background-color: #218838;
 }
 
-/* Estilo para el nuevo botón "Borrar todas las tareas" */
+/* 6. Estilo para el botón "Borrar todas las tareas" */
 #clear-all-btn {
     background-color: #ffc107;
     color: #333;
     border: none;
     padding: 10px 15px;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 16px; 
     border-radius: 4px;
     white-space: nowrap;
-    height: 38px; 
+    height: auto; 
     line-height: 1.2;
+    align-self: center; 
 }
 
 #clear-all-btn:hover {
     background-color: #e0a800;
 }
 
-
-/* 3. Estilos de la Lista de Tareas (R) */
+/* 7. Estilos de la Lista de Tareas (R) */
 #tasks-list h2 {
     color: #007bff;
     border-bottom: 2px solid #eee;
@@ -117,7 +132,7 @@ main {
     word-break: break-word;
 }
 
-/* 4. Estilos de Completado */
+/* 8. Estilos de Completado */
 .task-item.completed .task-text {
     text-decoration: line-through;
     color: #999;
@@ -169,18 +184,18 @@ main {
 }
 
 .complete-btn.pending {
-    background-color: #17a2b8; /* Azul claro (Pendiente) */
+    background-color: #17a2b8;
     color: white;
 }
 
 .complete-btn.completed {
-    background-color: #28a745; /* Verde (Terminada) */
+    background-color: #28a745;
     color: white;
 }
 /* ---------------------------------------------------------------------- */
 
 
-/* 5. Estilos para el Modo Edición */
+/* 9. Estilos para el Modo Edición */
 .task-item.editing .task-text,
 .task-item.editing .complete-btn,
 .task-item.editing .delete-btn {
@@ -205,7 +220,7 @@ main {
     color: white;
 }
 
-/* 6. Estilos para los Controles de Filtro */
+/* 10. Estilos para los Controles de Filtro */
 #filter-controls button {
     background-color: #f8f9fa;
     color: #007bff;
