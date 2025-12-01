@@ -4,11 +4,13 @@ const taskInput = document.getElementById('task-input');
 const tasksList = document.getElementById('tasks-list');
 const errorMessage = document.getElementById('error-message');
 const filterControls = document.getElementById('filter-controls');
+const clearAllBtn = document.getElementById('clear-all-btn'); // Nuevo botón
 
 // 1. Event Listeners y Carga Inicial
 document.addEventListener('DOMContentLoaded', loadTasks);
 taskForm.addEventListener('submit', addTask);
 filterControls.addEventListener('click', handleFilterClick);
+clearAllBtn.addEventListener('click', clearAllTasks); // Nuevo Listener
 
 /**
  * Carga las tareas aplicando el filtro por defecto ('all').
@@ -83,7 +85,6 @@ function createTaskElement(task) {
     taskItem.className = 'task-item';
     taskItem.setAttribute('data-id', task.id);
     
-    // Añade la clase 'completed' si corresponde
     if (task.completed) {
         taskItem.classList.add('completed');
     }
@@ -126,7 +127,7 @@ function createTaskElement(task) {
     // 3. Botón de Completar (Toggle) (Fila inferior)
     const completeBtn = document.createElement('button');
     completeBtn.className = 'complete-btn';
-    updateCompleteButtonState(completeBtn, task.completed); // Función auxiliar
+    updateCompleteButtonState(completeBtn, task.completed); 
     completeBtn.addEventListener('click', () => toggleComplete(taskItem, task.id));
 
     // 4. Ensamblar todos los botones al actionsContainer
@@ -160,15 +161,13 @@ function updateCompleteButtonState(button, isCompleted) {
  * Alterna el estado 'completado' de una tarea.
  */
 function toggleComplete(taskItem, id) {
-    // 1. Alternar la clase en el DOM
     taskItem.classList.toggle('completed');
     const isCompleted = taskItem.classList.contains('completed');
     
-    // 2. Actualizar el texto y estilo del botón
     const completeBtn = taskItem.querySelector('.complete-btn');
     updateCompleteButtonState(completeBtn, isCompleted); 
 
-    // 3. Actualizar en localStorage
+    // Actualizar en localStorage
     let tasks = getTasksFromStorage();
     tasks = tasks.map(task => {
         if (task.id === id) {
@@ -178,7 +177,7 @@ function toggleComplete(taskItem, id) {
     });
     localStorage.setItem('tasks', JSON.stringify(tasks));
     
-    // 4. Re-aplicar el filtro actual para que la tarea se oculte/muestre si es necesario
+    // Re-aplicar el filtro actual
     const currentFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
     filterTasks(currentFilter);
 }
@@ -240,10 +239,7 @@ function updateTaskInStorage(id, newText) {
  */
 function deleteTask(taskItem, id) {
     if (confirm('¿Estás seguro de que quieres eliminar esta tarea?')) {
-        // 1. Eliminar del DOM
         taskItem.remove();
-
-        // 2. Eliminar del localStorage
         removeTaskFromStorage(id);
     }
 }
@@ -258,6 +254,32 @@ function removeTaskFromStorage(id) {
 }
 
 // -----------------------------------------------------
+// LÓGICA DE BORRADO MASIVO
+// -----------------------------------------------------
+
+/**
+ * Borra todas las tareas del DOM y del localStorage.
+ */
+function clearAllTasks() {
+    if (confirm('¿Estás seguro de que quieres BORRAR TODAS las tareas? Esta acción no se puede deshacer.')) {
+        
+        // 1. Borrar del localStorage
+        localStorage.removeItem('tasks');
+
+        // 2. Borrar del DOM y mostrar mensaje
+        tasksList.innerHTML = '<h2>Lista de Tareas</h2>'; 
+        tasksList.innerHTML += `<p style="text-align: center; color: #999; padding: 20px 0;">Todas las tareas han sido eliminadas.</p>`;
+        
+        // 3. Resetear el filtro a 'Todas'
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        document.querySelector('[data-filter="all"]').classList.add('active');
+    }
+}
+
+
+// -----------------------------------------------------
 // LÓGICA DE FILTRADO
 // -----------------------------------------------------
 
@@ -266,15 +288,12 @@ function removeTaskFromStorage(id) {
  */
 function handleFilterClick(e) {
     if (e.target.classList.contains('filter-btn')) {
-        // Desactivar el botón activo actual
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.classList.remove('active');
         });
         
-        // Activar el botón clicado
         e.target.classList.add('active');
         
-        // Aplicar el filtro
         const filterType = e.target.dataset.filter;
         filterTasks(filterType);
     }
@@ -287,11 +306,10 @@ function filterTasks(filterType) {
     // 1. Limpiar la lista actual en el DOM
     tasksList.innerHTML = '<h2>Lista de Tareas</h2>';
 
-    // 2. Obtener todas las tareas
+    // 2. Obtener y filtrar tareas
     const allTasks = getTasksFromStorage();
     let filteredTasks = [];
 
-    // 3. Aplicar la lógica de filtrado
     if (filterType === 'pending') {
         filteredTasks = allTasks.filter(task => task.completed === false);
     } else if (filterType === 'completed') {
@@ -300,7 +318,7 @@ function filterTasks(filterType) {
         filteredTasks = allTasks;
     }
 
-    // 4. Inyectar las tareas filtradas en el DOM
+    // 3. Inyectar tareas o mensaje de vacío
     if (filteredTasks.length === 0) {
         const message = filterType === 'all' ? 'No hay tareas' : filterType === 'pending' ? 'No hay tareas pendientes' : 'No hay tareas completadas';
         tasksList.innerHTML += `<p style="text-align: center; color: #999; padding: 20px 0;">${message} en este momento.</p>`;

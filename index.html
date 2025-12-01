@@ -13,11 +13,16 @@
     </header>
 
     <main>
-        <form id="task-form">
-            <input type="text" id="task-input" placeholder="Añadir nueva tarea..." required>
-            <button type="submit">Agregar Tarea</button>
-            <p id="error-message" style="color: #dc3545; margin-top: 10px; display: none;"></p>
-        </form>
+        <div id="input-actions-container">
+            <form id="task-form">
+                <input type="text" id="task-input" placeholder="Añadir nueva tarea..." required>
+                <button type="submit">Agregar Tarea</button>
+            </form>
+            
+            <button id="clear-all-btn">Borrar todas las tareas</button>
+        </div>
+        
+        <p id="error-message" style="color: #dc3545; margin-top: 10px; display: none;"></p>
 
         <div id="filter-controls" style="margin-bottom: 20px;">
             <button class="filter-btn active" data-filter="all">Todas</button>
