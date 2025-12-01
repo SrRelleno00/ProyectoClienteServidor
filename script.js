@@ -101,20 +101,18 @@ function formatDate(dateString) {
 }
 
 /**
- * Crea el elemento HTML para una tarea.
- * Se asegura de que el formulario de edición esté oculto por defecto
- * para evitar duplicación visual.
+ * Crea el elemento HTML para una tarea, mostrando inmediatamente el modo edición.
  */
 function createTaskElement(task) {
     const taskItem = document.createElement('div');
-    taskItem.className = 'task-item';
+    taskItem.className = 'task-item editing'; // <<< INICIA EN MODO EDICIÓN
     taskItem.setAttribute('data-id', task.id);
     
     if (task.completed) {
         taskItem.classList.add('completed');
     }
     
-    // --- 1. Contenedor de Detalles (Título, Materia, Fecha, Descripción) ---
+    // --- 1. Contenedor de Detalles (OCULTADO POR EL CSS .editing) ---
     const detailsContainer = document.createElement('div');
     detailsContainer.className = 'task-details-container';
 
@@ -131,9 +129,10 @@ function createTaskElement(task) {
          detailsContainer.innerHTML += `<p class="task-description">${task.description}</p>`;
     }
 
-    // --- 2. Formulario de Edición (Oculto por defecto) ---
+    // --- 2. Formulario de Edición (VISIBLE POR EL CSS .editing) ---
     const editForm = document.createElement('div');
-    editForm.className = 'edit-form'; // Oculto por defecto por CSS
+    editForm.className = 'edit-form'; // Estará visible gracias a la clase 'editing' en taskItem
+    editForm.style.display = 'grid'; // <<< FORZAMOS LA VISIBILIDAD INICIAL
     editForm.innerHTML = `
         <input type="text" id="edit-title-input-${task.id}" value="${task.title}" required>
         <input type="text" id="edit-subject-input-${task.id}" value="${task.subject}" required>
@@ -151,7 +150,7 @@ function createTaskElement(task) {
     // Botón Editar/Guardar (U de CRUD)
     const editBtn = document.createElement('button');
     editBtn.className = 'edit-btn';
-    editBtn.textContent = 'Editar';
+    editBtn.textContent = 'Guardar'; // <<< TEXTO INICIAL "GUARDAR"
     editBtn.addEventListener('click', () => editTask(taskItem, task.id));
 
     // Botón Eliminar (D de CRUD)
@@ -199,6 +198,12 @@ function updateCompleteButtonState(button, isCompleted) {
  * Alterna el estado 'completado' de una tarea.
  */
 function toggleComplete(taskItem, id) {
+    // Si la tarea está en modo edición, no permitir toggle de estado hasta que se guarde
+    if (taskItem.classList.contains('editing')) {
+        alert('Guarda los cambios antes de cambiar el estado de la tarea.');
+        return;
+    }
+    
     taskItem.classList.toggle('completed');
     const isCompleted = taskItem.classList.contains('completed');
     
@@ -227,17 +232,10 @@ function editTask(taskItem, taskId) {
     const isEditing = taskItem.classList.contains('editing');
     const editBtn = taskItem.querySelector('.edit-btn');
     const editForm = taskItem.querySelector('.edit-form');
-    
-    if (!isEditing) {
-        // --- Modo Editar: Mostrar inputs ---
-        taskItem.classList.add('editing');
-        editForm.style.display = 'grid'; 
-        editBtn.textContent = 'Guardar';
-        
-        // Enfocar el primer input
-        editForm.querySelector(`#edit-title-input-${taskId}`).focus();
+    const detailsContainer = taskItem.querySelector('.task-details-container');
+    const completeBtn = taskItem.querySelector('.complete-btn');
 
-    } else {
+    if (isEditing) {
         // --- Modo Guardar: Capturar y validar ---
         const newTitle = editForm.querySelector(`#edit-title-input-${taskId}`).value.trim();
         const newSubject = editForm.querySelector(`#edit-subject-input-${taskId}`).value.trim();
@@ -257,12 +255,32 @@ function editTask(taskItem, taskId) {
             description: newDescription
         });
 
-        // 2. Salir del modo edición y refrescar la lista para ver los cambios
+        // 2. Salir del modo edición
         taskItem.classList.remove('editing');
+        editForm.style.display = 'none'; 
+        detailsContainer.style.display = 'block'; // Mostrar los detalles normales
+        completeBtn.style.display = 'block'; // Mostrar botón completar
+        
+        editBtn.textContent = 'Editar'; 
+
+        // 3. Recargar la lista para que los detalles se actualicen
         const currentFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
-        filterTasks(currentFilter); // Recarga para actualizar DOM
+        filterTasks(currentFilter); 
+
+    } else {
+        // --- Modo Editar: Mostrar inputs y ocultar detalles ---
+        taskItem.classList.add('editing');
+        editForm.style.display = 'grid'; 
+        detailsContainer.style.display = 'none'; // Ocultar los detalles normales
+        completeBtn.style.display = 'none'; // Ocultar botón completar
+        
+        editBtn.textContent = 'Guardar';
+        
+        // Enfocar el primer input
+        editForm.querySelector(`#edit-title-input-${taskId}`).focus();
     }
 }
+
 
 /**
  * Actualiza los campos de una tarea en el localStorage.
