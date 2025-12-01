@@ -46,7 +46,7 @@ main {
     box-shadow: none;
     margin: 0; 
     
-    /* Configuración de la cuadrícula interna del formulario */
+    /* Configuración de la cuadrícula interna del formulario: 2 columnas */
     display: grid;
     grid-template-columns: 1fr 1fr; 
     gap: 10px; 
@@ -77,10 +77,10 @@ main {
     grid-column: 2 / 3;
 }
 
-/* --- REGLA CORREGIDA Y CLAVE: Aumentar la altura del textarea --- */
+/* --- REGLA CLAVE REFORZADA: El textarea debe ocupar toda la fila --- */
 #description-input {
-    grid-column: 1 / -1; /* Ocupa toda la fila */
-    height: 150px; /* ¡Altura aumentada y asegurada! */
+    grid-column: 1 / -1; /* FUERZA al elemento a expandirse de la columna 1 hasta la última */
+    height: 150px; 
     resize: vertical; 
 }
 /* -------------------------------------------------------- */
@@ -276,7 +276,7 @@ main {
 /* Aumentar altura del textarea en modo edición */
 .task-item.editing #edit-description-input {
     grid-column: 1 / -1;
-    height: 100px; /* Altura generosa para edición */
+    height: 100px; 
 }
 
 /* Ocultar el formulario de edición por defecto */
