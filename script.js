@@ -101,18 +101,18 @@ function formatDate(dateString) {
 }
 
 /**
- * Crea el elemento HTML para una tarea, mostrando inmediatamente el modo edición.
+ * Crea el elemento HTML para una tarea, iniciando en modo de detalles.
  */
 function createTaskElement(task) {
     const taskItem = document.createElement('div');
-    taskItem.className = 'task-item editing'; // <<< INICIA EN MODO EDICIÓN
+    taskItem.className = 'task-item'; // <<< NO INICIA EN MODO EDICIÓN
     taskItem.setAttribute('data-id', task.id);
     
     if (task.completed) {
         taskItem.classList.add('completed');
     }
     
-    // --- 1. Contenedor de Detalles (OCULTADO POR EL CSS .editing) ---
+    // --- 1. Contenedor de Detalles (Visible por defecto) ---
     const detailsContainer = document.createElement('div');
     detailsContainer.className = 'task-details-container';
 
@@ -129,10 +129,10 @@ function createTaskElement(task) {
          detailsContainer.innerHTML += `<p class="task-description">${task.description}</p>`;
     }
 
-    // --- 2. Formulario de Edición (VISIBLE POR EL CSS .editing) ---
+    // --- 2. Formulario de Edición (Oculto por defecto por CSS) ---
     const editForm = document.createElement('div');
-    editForm.className = 'edit-form'; // Estará visible gracias a la clase 'editing' en taskItem
-    editForm.style.display = 'grid'; // <<< FORZAMOS LA VISIBILIDAD INICIAL
+    editForm.className = 'edit-form'; 
+    editForm.style.display = 'none'; // <<< OCULTAR POR DEFECTO
     editForm.innerHTML = `
         <input type="text" id="edit-title-input-${task.id}" value="${task.title}" required>
         <input type="text" id="edit-subject-input-${task.id}" value="${task.subject}" required>
@@ -147,10 +147,10 @@ function createTaskElement(task) {
     const topActions = document.createElement('div');
     topActions.className = 'top-actions';
 
-    // Botón Editar/Guardar (U de CRUD)
+    // Botón Editar/Guardar 
     const editBtn = document.createElement('button');
     editBtn.className = 'edit-btn';
-    editBtn.textContent = 'Guardar'; // <<< TEXTO INICIAL "GUARDAR"
+    editBtn.textContent = 'Editar'; // <<< TEXTO INICIAL "EDITAR"
     editBtn.addEventListener('click', () => editTask(taskItem, task.id));
 
     // Botón Eliminar (D de CRUD)
@@ -234,6 +234,7 @@ function editTask(taskItem, taskId) {
     const editForm = taskItem.querySelector('.edit-form');
     const detailsContainer = taskItem.querySelector('.task-details-container');
     const completeBtn = taskItem.querySelector('.complete-btn');
+    const deleteBtn = taskItem.querySelector('.delete-btn'); // Necesario para mostrar/ocultar
 
     if (isEditing) {
         // --- Modo Guardar: Capturar y validar ---
@@ -257,9 +258,10 @@ function editTask(taskItem, taskId) {
 
         // 2. Salir del modo edición
         taskItem.classList.remove('editing');
-        editForm.style.display = 'none'; 
-        detailsContainer.style.display = 'block'; // Mostrar los detalles normales
-        completeBtn.style.display = 'block'; // Mostrar botón completar
+        editForm.style.display = 'none';
+        detailsContainer.style.display = 'block'; 
+        completeBtn.style.display = 'block'; 
+        deleteBtn.style.display = 'block'; // Volver a mostrar el botón Eliminar
         
         editBtn.textContent = 'Editar'; 
 
@@ -271,8 +273,9 @@ function editTask(taskItem, taskId) {
         // --- Modo Editar: Mostrar inputs y ocultar detalles ---
         taskItem.classList.add('editing');
         editForm.style.display = 'grid'; 
-        detailsContainer.style.display = 'none'; // Ocultar los detalles normales
-        completeBtn.style.display = 'none'; // Ocultar botón completar
+        detailsContainer.style.display = 'none'; 
+        completeBtn.style.display = 'none'; 
+        deleteBtn.style.display = 'none'; // Ocultar el botón Eliminar mientras edita
         
         editBtn.textContent = 'Guardar';
         

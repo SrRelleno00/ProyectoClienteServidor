@@ -25,7 +25,9 @@ main {
     margin-top: 30px;
 }
 
-/* --- ESTILOS CLAVE PARA EL NUEVO LAYOUT (Input arriba, botones abajo) --- */
+---
+
+/* --- ESTILOS CLAVE PARA EL ÁREA DE ENTRADA (Input arriba, botones abajo) --- */
 
 /* 1. Contenedor principal que contiene el formulario y los botones */
 #main-input-area {
@@ -77,13 +79,12 @@ main {
     grid-column: 2 / 3;
 }
 
-/* --- REGLA CLAVE CORREGIDA: Posición y Altura del textarea --- */
+/* REGLA CLAVE: Posición y Altura del textarea */
 #description-input {
     grid-column: 1 / -1; /* FUERZA al elemento a ocupar toda la fila */
     height: 150px; /* Altura aumentada */
     resize: vertical; 
 }
-/* -------------------------------------------------------- */
 
 
 /* 4. Contenedor de botones que alinea horizontalmente */
@@ -92,7 +93,6 @@ main {
     justify-content: flex-start;
     gap: 10px; 
 }
-/* ---------------------------------------------------------------------- */
 
 
 /* 5. Estilos para el botón "Agregar Tarea" */
@@ -130,7 +130,9 @@ main {
     background-color: #e0a800;
 }
 
-/* 7. Estilos de la Lista de Tareas (R) */
+---
+
+/* 7. Estilos de la Lista de Tareas */
 #tasks-list h2 {
     color: #007bff;
     border-bottom: 2px solid #eee;
@@ -179,7 +181,7 @@ main {
     padding: 10px;
     border-left: 3px solid #ccc;
     background-color: #f9f9f9;
-    white-space: pre-wrap; /* Asegura que los saltos de línea se respeten */
+    white-space: pre-wrap; 
 }
 
 
@@ -246,13 +248,11 @@ main {
     background-color: #28a745;
     color: white;
 }
-/* ---------------------------------------------------------------------- */
 
+---
 
-/* 9. Estilos para el Modo Edición */
-.task-item.editing .task-details-container,
-.task-item.editing .complete-btn,
-.task-item.editing .delete-btn {
+/* 9. Estilos para el Modo Edición (Oculta la vista de detalles y muestra la de inputs) */
+.task-item.editing .task-details-container {
     display: none;
 }
 
