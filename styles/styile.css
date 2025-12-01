@@ -27,11 +27,11 @@ main {
 
 /* --- ESTILOS CLAVE PARA EL NUEVO LAYOUT (Input arriba, botones abajo) --- */
 
-/* 1. Contenedor principal que apila el input y los botones (Grid) */
+/* 1. Contenedor principal que contiene el formulario y los botones */
 #main-input-area {
     display: grid;
     grid-template-rows: auto auto; 
-    gap: 10px; 
+    gap: 15px; /* Espacio vertical entre el formulario y la fila de botones */
     margin-bottom: 20px;
     background-color: white; 
     padding: 15px;
@@ -39,26 +39,51 @@ main {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-/* 2. El Formulario solo contiene el input */
+/* 2. Formulario: utiliza un grid interno para alinear los campos */
 #task-form {
     background-color: transparent;
     padding: 0;
     box-shadow: none;
-    display: flex; 
-    flex-grow: 1;
     margin: 0; 
+    
+    /* Configuración de la cuadrícula interna del formulario */
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dos columnas: 50%/50% */
+    gap: 10px; /* Espacio entre los inputs */
 }
 
-/* 3. El Input ocupa todo el ancho */
-#task-form input[type="text"] {
-    flex-grow: 1;
+/* 3. Estilos de los inputs y el textarea */
+#task-form input, 
+#task-form textarea {
     padding: 10px;
     border: 2px solid #ccc;
     border-radius: 4px;
     font-size: 16px;
     width: 100%; 
-    margin: 0;
+    box-sizing: border-box; /* Crucial para que el padding no desborde el ancho */
 }
+
+/* El input de Título ocupa el 100% (se extiende a ambas columnas) */
+#task-input {
+    grid-column: 1 / -1; 
+}
+
+/* El textarea de Descripción ocupa toda la fila (ambas columnas) */
+#description-input {
+    grid-column: 1 / -1; 
+    height: 80px;
+    resize: vertical; /* Permite al usuario ajustar la altura */
+}
+
+/* El input de Materia y Fecha se dividen 50/50 */
+#subject-input {
+    grid-column: 1 / 2;
+}
+
+#due-date-input {
+    grid-column: 2 / 3;
+}
+
 
 /* 4. Contenedor de botones que alinea horizontalmente */
 #main-buttons-row {
@@ -116,7 +141,7 @@ main {
 .task-item {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start; /* Alinea los detalles y botones en la parte superior */
     background-color: white;
     padding: 15px;
     margin-bottom: 10px;
@@ -125,15 +150,41 @@ main {
     transition: background-color 0.2s;
 }
 
-.task-text {
+/* Contenedor de los detalles (título, materia, descripción) */
+.task-details-container {
     flex-grow: 1;
-    font-size: 17px;
     margin-right: 20px;
     word-break: break-word;
 }
 
+/* Estilos de los nuevos detalles */
+.task-title {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #007bff;
+}
+
+.task-meta {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 5px;
+}
+
+.task-description {
+    font-size: 15px;
+    color: #333;
+    margin-top: 10px;
+    padding: 10px;
+    border-left: 3px solid #ccc;
+    background-color: #f9f9f9;
+}
+
+
 /* 8. Estilos de Completado */
-.task-item.completed .task-text {
+.task-item.completed .task-title,
+.task-item.completed .task-meta,
+.task-item.completed .task-description {
     text-decoration: line-through;
     color: #999;
 }
@@ -143,6 +194,7 @@ main {
     display: flex;
     flex-direction: column; 
     align-items: flex-end; 
+    min-width: 120px; /* Asegura espacio mínimo para los botones */
 }
 
 .top-actions {
@@ -196,22 +248,39 @@ main {
 
 
 /* 9. Estilos para el Modo Edición */
-.task-item.editing .task-text,
+/* Ocultamos los detalles y mostramos los inputs/textarea para editar */
+.task-item.editing .task-details-container,
 .task-item.editing .complete-btn,
 .task-item.editing .delete-btn {
     display: none;
 }
 
-.task-item.editing .edit-input {
-    display: block;
+.task-item.editing .edit-form {
+    display: grid; /* Usamos grid para el formulario de edición */
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
     flex-grow: 1;
+    margin-right: 10px;
+}
+
+.task-item.editing .edit-form input,
+.task-item.editing .edit-form textarea {
     padding: 5px;
     border: 1px solid #007bff;
     border-radius: 4px;
-    font-size: 17px;
+    font-size: 15px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.edit-input {
+/* Hacemos que la descripción ocupe toda la fila en el modo edición */
+.task-item.editing #edit-description-input {
+    grid-column: 1 / -1;
+    height: 60px;
+}
+
+/* Ocultar el formulario de edición por defecto */
+.edit-form {
     display: none;
 }
 

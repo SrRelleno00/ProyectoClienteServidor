@@ -1,6 +1,11 @@
 // Obtener referencias a los elementos del DOM
 const taskForm = document.getElementById('task-form');
 const taskInput = document.getElementById('task-input');
+// Nuevas referencias para los campos de datos
+const subjectInput = document.getElementById('subject-input'); 
+const dueDateInput = document.getElementById('due-date-input'); 
+const descriptionInput = document.getElementById('description-input'); 
+
 const tasksList = document.getElementById('tasks-list');
 const errorMessage = document.getElementById('error-message');
 const filterControls = document.getElementById('filter-controls');
@@ -48,21 +53,27 @@ function saveTaskToStorage(task) {
 function addTask(e) {
     e.preventDefault();
 
-    const text = taskInput.value.trim();
+    const title = taskInput.value.trim();
+    const subject = subjectInput.value.trim();
+    const dueDate = dueDateInput.value;
+    const description = descriptionInput.value.trim();
 
     // 1. VALIDACIÓN
-    if (text === '') {
-        errorMessage.textContent = 'El campo de tarea no puede estar vacío.';
+    if (title === '' || subject === '' || dueDate === '') {
+        errorMessage.textContent = 'El título, materia y fecha límite no pueden estar vacíos.';
         errorMessage.style.display = 'block';
         return; 
     }
 
     errorMessage.style.display = 'none';
 
-    // Crear el objeto de tarea
+    // Crear el objeto de tarea con los nuevos campos
     const newTask = {
         id: Date.now(),
-        text: text,
+        title: title,
+        subject: subject,
+        dueDate: dueDate,
+        description: description,
         completed: false
     };
 
@@ -73,8 +84,20 @@ function addTask(e) {
     const currentFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
     filterTasks(currentFilter);
 
-    // 3. Limpiar el input
+    // 3. Limpiar los inputs
     taskInput.value = '';
+    subjectInput.value = '';
+    dueDateInput.value = '';
+    descriptionInput.value = '';
+}
+
+/**
+ * Formatea la fecha de YYYY-MM-DD a DD/MM/YYYY
+ */
+function formatDate(dateString) {
+    if (!dateString) return 'N/A';
+    const [year, month, day] = dateString.split('-');
+    return `${day}/${month}/${year}`;
 }
 
 /**
@@ -88,23 +111,38 @@ function createTaskElement(task) {
     if (task.completed) {
         taskItem.classList.add('completed');
     }
+    
+    // --- 1. Contenedor de Detalles (Título, Materia, Fecha, Descripción) ---
+    const detailsContainer = document.createElement('div');
+    detailsContainer.className = 'task-details-container';
 
-    // 1. Texto de la tarea y campo de edición
-    const taskText = document.createElement('span');
-    taskText.className = 'task-text';
-    taskText.textContent = task.text;
+    // Título
+    detailsContainer.innerHTML += `<span class="task-title">${task.title}</span>`;
+    
+    // Materia y Fecha
+    detailsContainer.innerHTML += `<div class="task-meta">
+        Materia: <strong>${task.subject}</strong> | Límite: <strong>${formatDate(task.dueDate)}</strong>
+    </div>`;
 
-    const editInput = document.createElement('input');
-    editInput.className = 'edit-input';
-    editInput.type = 'text';
-    editInput.value = task.text;
-    editInput.style.display = 'none';
+    // Descripción (solo si existe)
+    if (task.description) {
+         detailsContainer.innerHTML += `<p class="task-description">${task.description}</p>`;
+    }
 
-    // 2. Contenedor de botones (Derecha)
+    // --- 2. Formulario de Edición (Oculto por defecto) ---
+    const editForm = document.createElement('div');
+    editForm.className = 'edit-form';
+    editForm.innerHTML = `
+        <input type="text" id="edit-title-input-${task.id}" value="${task.title}" required>
+        <input type="text" id="edit-subject-input-${task.id}" value="${task.subject}" required>
+        <input type="date" id="edit-date-input-${task.id}" value="${task.dueDate}" required>
+        <textarea id="edit-description-input-${task.id}" placeholder="Descripción...">${task.description}</textarea>
+    `;
+
+    // --- 3. Contenedor de Acciones (Botones) ---
     const actionsContainer = document.createElement('div');
     actionsContainer.className = 'actions-container';
     
-    // Contenedor para EDITAR y ELIMINAR (Fila superior)
     const topActions = document.createElement('div');
     topActions.className = 'top-actions';
 
@@ -112,7 +150,7 @@ function createTaskElement(task) {
     const editBtn = document.createElement('button');
     editBtn.className = 'edit-btn';
     editBtn.textContent = 'Editar';
-    editBtn.addEventListener('click', () => editTask(taskItem, editInput, editBtn));
+    editBtn.addEventListener('click', () => editTask(taskItem, task.id));
 
     // Botón Eliminar (D de CRUD)
     const deleteBtn = document.createElement('button');
@@ -120,23 +158,21 @@ function createTaskElement(task) {
     deleteBtn.textContent = 'Eliminar';
     deleteBtn.addEventListener('click', () => deleteTask(taskItem, task.id));
     
-    // Ensamblar la fila superior
     topActions.appendChild(editBtn);
     topActions.appendChild(deleteBtn);
     
-    // 3. Botón de Completar (Toggle) (Fila inferior)
+    // Botón de Completar (Toggle)
     const completeBtn = document.createElement('button');
     completeBtn.className = 'complete-btn';
     updateCompleteButtonState(completeBtn, task.completed); 
     completeBtn.addEventListener('click', () => toggleComplete(taskItem, task.id));
 
-    // 4. Ensamblar todos los botones al actionsContainer
     actionsContainer.appendChild(topActions);
     actionsContainer.appendChild(completeBtn);
 
-    // 5. Ensamblar todo al taskItem principal
-    taskItem.appendChild(taskText);
-    taskItem.appendChild(editInput);
+    // --- 4. Ensamblar todo ---
+    taskItem.appendChild(detailsContainer);
+    taskItem.appendChild(editForm);
     taskItem.appendChild(actionsContainer);
 
     return taskItem;
@@ -185,48 +221,56 @@ function toggleComplete(taskItem, id) {
 /**
  * Maneja la edición y guardado de una tarea. (U de CRUD)
  */
-function editTask(taskItem, editInput, editBtn) {
+function editTask(taskItem, taskId) {
     const isEditing = taskItem.classList.contains('editing');
-    const taskText = taskItem.querySelector('.task-text');
-    const taskId = parseInt(taskItem.getAttribute('data-id'));
-
+    const editBtn = taskItem.querySelector('.edit-btn');
+    const editForm = taskItem.querySelector('.edit-form');
+    
     if (!isEditing) {
-        // Modo Editar:
+        // --- Modo Editar: Mostrar inputs ---
         taskItem.classList.add('editing');
-        taskText.style.display = 'none';
-        editInput.style.display = 'block';
+        editForm.style.display = 'grid'; 
         editBtn.textContent = 'Guardar';
-        editInput.focus();
-    } else {
-        // Modo Guardar:
-        const newText = editInput.value.trim();
+        
+        // Enfocar el primer input
+        editForm.querySelector(`#edit-title-input-${taskId}`).focus();
 
-        if (newText === '') {
-            alert('La tarea no puede estar vacía.');
-            editInput.focus();
+    } else {
+        // --- Modo Guardar: Capturar y validar ---
+        const newTitle = editForm.querySelector(`#edit-title-input-${taskId}`).value.trim();
+        const newSubject = editForm.querySelector(`#edit-subject-input-${taskId}`).value.trim();
+        const newDate = editForm.querySelector(`#edit-date-input-${taskId}`).value;
+        const newDescription = editForm.querySelector(`#edit-description-input-${taskId}`).value.trim();
+
+        if (newTitle === '' || newSubject === '' || newDate === '') {
+            alert('El título, materia y fecha límite no pueden estar vacíos.');
             return;
         }
 
-        // 1. Actualizar en el DOM
-        taskText.textContent = newText;
-        taskText.style.display = 'block';
-        editInput.style.display = 'none';
-        editBtn.textContent = 'Editar';
-        taskItem.classList.remove('editing');
+        // 1. Actualizar en localStorage
+        updateTaskInStorage(taskId, {
+            title: newTitle,
+            subject: newSubject,
+            dueDate: newDate,
+            description: newDescription
+        });
 
-        // 2. Actualizar en localStorage
-        updateTaskInStorage(taskId, newText);
+        // 2. Salir del modo edición y refrescar la lista para ver los cambios
+        taskItem.classList.remove('editing');
+        const currentFilter = document.querySelector('.filter-btn.active')?.dataset.filter || 'all';
+        filterTasks(currentFilter); // Recarga para actualizar DOM
     }
 }
 
 /**
- * Actualiza el texto de una tarea en el localStorage.
+ * Actualiza los campos de una tarea en el localStorage.
  */
-function updateTaskInStorage(id, newText) {
+function updateTaskInStorage(id, newValues) {
     let tasks = getTasksFromStorage();
     tasks = tasks.map(task => {
         if (task.id === id) {
-            task.text = newText;
+            // Preservar el ID y el estado de completado
+            return { ...task, ...newValues };
         }
         return task;
     });
