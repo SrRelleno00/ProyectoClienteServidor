@@ -77,10 +77,10 @@ main {
     grid-column: 2 / 3;
 }
 
-/* --- REGLA CLAVE REFORZADA: El textarea debe ocupar toda la fila --- */
+/* --- REGLA CLAVE CORREGIDA: Posición y Altura del textarea --- */
 #description-input {
-    grid-column: 1 / -1; /* FUERZA al elemento a expandirse de la columna 1 hasta la última */
-    height: 150px; 
+    grid-column: 1 / -1; /* FUERZA al elemento a ocupar toda la fila */
+    height: 150px; /* Altura aumentada */
     resize: vertical; 
 }
 /* -------------------------------------------------------- */
@@ -179,6 +179,7 @@ main {
     padding: 10px;
     border-left: 3px solid #ccc;
     background-color: #f9f9f9;
+    white-space: pre-wrap; /* Asegura que los saltos de línea se respeten */
 }
 
 

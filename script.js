@@ -102,6 +102,8 @@ function formatDate(dateString) {
 
 /**
  * Crea el elemento HTML para una tarea.
+ * Se asegura de que el formulario de edición esté oculto por defecto
+ * para evitar duplicación visual.
  */
 function createTaskElement(task) {
     const taskItem = document.createElement('div');
@@ -124,14 +126,14 @@ function createTaskElement(task) {
         Materia: <strong>${task.subject}</strong> | Límite: <strong>${formatDate(task.dueDate)}</strong>
     </div>`;
 
-    // Descripción (solo si existe)
-    if (task.description) {
+    // Descripción (solo si existe y está trimmeada)
+    if (task.description.trim()) {
          detailsContainer.innerHTML += `<p class="task-description">${task.description}</p>`;
     }
 
     // --- 2. Formulario de Edición (Oculto por defecto) ---
     const editForm = document.createElement('div');
-    editForm.className = 'edit-form';
+    editForm.className = 'edit-form'; // Oculto por defecto por CSS
     editForm.innerHTML = `
         <input type="text" id="edit-title-input-${task.id}" value="${task.title}" required>
         <input type="text" id="edit-subject-input-${task.id}" value="${task.subject}" required>
