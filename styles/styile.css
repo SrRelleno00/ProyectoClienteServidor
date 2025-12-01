@@ -48,7 +48,6 @@ main {
     
     /* Configuración de la cuadrícula interna del formulario */
     display: grid;
-    /* Define 4 columnas implícitas, pero usaremos el span para controlar la disposición */
     grid-template-columns: 1fr 1fr; 
     gap: 10px; 
 }
@@ -78,10 +77,10 @@ main {
     grid-column: 2 / 3;
 }
 
-/* --- CAMBIO CLAVE: Aumentar la altura del textarea --- */
+/* --- REGLA CORREGIDA Y CLAVE: Aumentar la altura del textarea --- */
 #description-input {
     grid-column: 1 / -1; /* Ocupa toda la fila */
-    height: 150px; /* ¡Altura aumentada a 150px! */
+    height: 150px; /* ¡Altura aumentada y asegurada! */
     resize: vertical; 
 }
 /* -------------------------------------------------------- */
