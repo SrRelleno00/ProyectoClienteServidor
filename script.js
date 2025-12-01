@@ -2,8 +2,8 @@
 const taskForm = document.getElementById('task-form');
 const taskInput = document.getElementById('task-input');
 const tasksList = document.getElementById('tasks-list');
-const errorMessage = document.getElementById('error-message'); // Referencia para la validación
-const filterControls = document.getElementById('filter-controls'); // Referencia para los filtros
+const errorMessage = document.getElementById('error-message');
+const filterControls = document.getElementById('filter-controls');
 
 // 1. Event Listeners y Carga Inicial
 document.addEventListener('DOMContentLoaded', loadTasks);
@@ -14,7 +14,6 @@ filterControls.addEventListener('click', handleFilterClick);
  * Carga las tareas aplicando el filtro por defecto ('all').
  */
 function loadTasks() {
-    // Al cargar, se aplica el filtro 'all' (o el filtro activo si lo hubiere)
     filterTasks('all'); 
 }
 
@@ -34,7 +33,6 @@ function getTasksFromStorage() {
 
 /**
  * Guarda una tarea en el localStorage.
- * @param {Object} task - El objeto de tarea a guardar.
  */
 function saveTaskToStorage(task) {
     const tasks = getTasksFromStorage();
@@ -50,21 +48,20 @@ function addTask(e) {
 
     const text = taskInput.value.trim();
 
-    // 1. VALIDACIÓN MEJORADA
+    // 1. VALIDACIÓN
     if (text === '') {
         errorMessage.textContent = 'El campo de tarea no puede estar vacío.';
         errorMessage.style.display = 'block';
         return; 
     }
 
-    // Ocultar el error si la validación es exitosa
     errorMessage.style.display = 'none';
 
-    // Crear el objeto de tarea (ahora con el campo 'completed')
+    // Crear el objeto de tarea
     const newTask = {
         id: Date.now(),
         text: text,
-        completed: false // Nuevo campo: por defecto, NO está completada
+        completed: false
     };
 
     // 1. Agregar al localStorage
@@ -86,42 +83,30 @@ function createTaskElement(task) {
     taskItem.className = 'task-item';
     taskItem.setAttribute('data-id', task.id);
     
-    // Si la tarea ya está completada, añade la clase 'completed' para CSS
+    // Añade la clase 'completed' si corresponde
     if (task.completed) {
         taskItem.classList.add('completed');
     }
 
-    // Contenedor del texto y botón de completar
-    const contentWrapper = document.createElement('div');
-
-    // 1. Botón de Completar/Incompletar (Toggle)
-    const completeBtn = document.createElement('button');
-    completeBtn.className = 'complete-btn';
-    completeBtn.textContent = task.completed ? '✅' : '⚪';
-    completeBtn.title = task.completed ? 'Marcar como Pendiente' : 'Marcar como Completada';
-    completeBtn.addEventListener('click', () => toggleComplete(taskItem, task.id));
-
-    // 2. Texto de la tarea
+    // 1. Texto de la tarea y campo de edición
     const taskText = document.createElement('span');
     taskText.className = 'task-text';
     taskText.textContent = task.text;
 
-    // 3. Campo de input para la edición
     const editInput = document.createElement('input');
     editInput.className = 'edit-input';
     editInput.type = 'text';
     editInput.value = task.text;
     editInput.style.display = 'none';
 
-    // Ensamblar la parte izquierda (Botón, Texto y Input de Edición)
-    contentWrapper.appendChild(completeBtn);
-    contentWrapper.appendChild(taskText);
-    contentWrapper.appendChild(editInput);
-
-    // Contenedor de botones de Acción (Editar/Eliminar)
+    // 2. Contenedor de botones (Derecha)
     const actionsContainer = document.createElement('div');
     actionsContainer.className = 'actions-container';
     
+    // Contenedor para EDITAR y ELIMINAR (Fila superior)
+    const topActions = document.createElement('div');
+    topActions.className = 'top-actions';
+
     // Botón Editar/Guardar (U de CRUD)
     const editBtn = document.createElement('button');
     editBtn.className = 'edit-btn';
@@ -134,14 +119,41 @@ function createTaskElement(task) {
     deleteBtn.textContent = 'Eliminar';
     deleteBtn.addEventListener('click', () => deleteTask(taskItem, task.id));
     
-    actionsContainer.appendChild(editBtn);
-    actionsContainer.appendChild(deleteBtn);
+    // Ensamblar la fila superior
+    topActions.appendChild(editBtn);
+    topActions.appendChild(deleteBtn);
     
-    // Ensamblar todos los elementos al taskItem principal
-    taskItem.appendChild(contentWrapper);
+    // 3. Botón de Completar (Toggle) (Fila inferior)
+    const completeBtn = document.createElement('button');
+    completeBtn.className = 'complete-btn';
+    updateCompleteButtonState(completeBtn, task.completed); // Función auxiliar
+    completeBtn.addEventListener('click', () => toggleComplete(taskItem, task.id));
+
+    // 4. Ensamblar todos los botones al actionsContainer
+    actionsContainer.appendChild(topActions);
+    actionsContainer.appendChild(completeBtn);
+
+    // 5. Ensamblar todo al taskItem principal
+    taskItem.appendChild(taskText);
+    taskItem.appendChild(editInput);
     taskItem.appendChild(actionsContainer);
 
     return taskItem;
+}
+
+/**
+ * Función auxiliar para actualizar el texto y estilo del botón 'Terminada'
+ */
+function updateCompleteButtonState(button, isCompleted) {
+    if (isCompleted) {
+        button.textContent = 'Terminada ✅';
+        button.classList.remove('pending');
+        button.classList.add('completed');
+    } else {
+        button.textContent = 'Pendiente ⚪';
+        button.classList.remove('completed');
+        button.classList.add('pending');
+    }
 }
 
 /**
@@ -152,10 +164,9 @@ function toggleComplete(taskItem, id) {
     taskItem.classList.toggle('completed');
     const isCompleted = taskItem.classList.contains('completed');
     
-    // 2. Actualizar el icono del botón
+    // 2. Actualizar el texto y estilo del botón
     const completeBtn = taskItem.querySelector('.complete-btn');
-    completeBtn.textContent = isCompleted ? '✅' : '⚪';
-    completeBtn.title = isCompleted ? 'Marcar como Pendiente' : 'Marcar como Completada';
+    updateCompleteButtonState(completeBtn, isCompleted); 
 
     // 3. Actualizar en localStorage
     let tasks = getTasksFromStorage();
@@ -242,7 +253,6 @@ function deleteTask(taskItem, id) {
  */
 function removeTaskFromStorage(id) {
     let tasks = getTasksFromStorage();
-    // Filtramos el array para mantener solo las tareas cuyo ID NO coincide con el ID a eliminar
     tasks = tasks.filter(task => task.id !== id);
     localStorage.setItem('tasks', JSON.stringify(tasks));
 }
@@ -292,7 +302,8 @@ function filterTasks(filterType) {
 
     // 4. Inyectar las tareas filtradas en el DOM
     if (filteredTasks.length === 0) {
-        tasksList.innerHTML += `<p style="text-align: center; color: #999;">No hay tareas ${filterType === 'all' ? '' : filterType === 'pending' ? 'pendientes' : 'completadas'} en este momento.</p>`;
+        const message = filterType === 'all' ? 'No hay tareas' : filterType === 'pending' ? 'No hay tareas pendientes' : 'No hay tareas completadas';
+        tasksList.innerHTML += `<p style="text-align: center; color: #999; padding: 20px 0;">${message} en este momento.</p>`;
     } else {
         filteredTasks.forEach(task => {
             const taskItem = createTaskElement(task);
