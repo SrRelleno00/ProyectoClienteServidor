@@ -162,10 +162,12 @@ main {
 
 /* Controles de Filtro */
 #filter-controls {
-    margin-bottom: 25px;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 10px;
+
+    margin-top: 25px;
+    margin-bottom: 25px;
 }
 
 #filter-controls button {
